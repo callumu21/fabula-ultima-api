@@ -1,7 +1,7 @@
 import buildServer from '../src/server';
 import prisma from '../src/lib/prisma';
 
-describe('GET /abilities', () => {
+describe('GET /skills', () => {
   const server = buildServer();
 
   beforeAll(async () => {
