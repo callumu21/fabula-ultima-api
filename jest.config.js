@@ -8,4 +8,5 @@ module.exports = {
   transform: {
     ...tsJestTransformCfg,
   },
+  modulePathIgnorePatterns: ['__tests__/fixtures'],
 };
