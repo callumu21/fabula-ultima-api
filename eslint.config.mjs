@@ -8,5 +8,5 @@ export default defineConfig([
   { files: ['**/*.js'], languageOptions: { sourceType: 'commonjs' } },
   { files: ['**/*.{js,mjs,cjs,ts,mts,cts}'], languageOptions: { globals: globals.browser } },
   tseslint.configs.recommended,
-  globalIgnores(['jest.config.js']),
+  globalIgnores(['jest.config.js', './generated']),
 ]);
