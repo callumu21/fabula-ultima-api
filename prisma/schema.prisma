@@ -15,9 +15,12 @@ datasource db {
 }
 
 model Class {
-  id     String  @id
-  name   String  @unique
-  skills Skill[]
+  id          String   @id
+  name        String   @unique
+  description String
+  questions   String[]
+  benefits    Json
+  skills      Skill[]
 }
 
 model Skill {
