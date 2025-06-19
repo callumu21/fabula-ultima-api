@@ -1,5 +1,6 @@
 import Fastify from 'fastify';
 import prismaPlugin from './plugins/prisma';
+import { classRoutes } from './routes/classes';
 import { skillRoutes } from './routes/skills';
 
 const buildServer = () => {
@@ -11,6 +12,7 @@ const buildServer = () => {
     return { status: 'ok' };
   });
 
+  app.register(classRoutes);
   app.register(skillRoutes);
 
   return app;
