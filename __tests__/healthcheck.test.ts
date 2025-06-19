@@ -1,4 +1,4 @@
-import { buildServer } from '../src/server';
+import buildServer from '../src/server';
 
 describe('GET /healthcheck', () => {
   it('should return status ok', async () => {
