@@ -1,5 +1,6 @@
 import buildServer from '../src/server';
 import prisma from '../src/lib/prisma';
+import { mockClass, mockSkills } from './fixtures/mockData';
 
 describe('GET /skills', () => {
   const server = buildServer();
@@ -33,23 +34,11 @@ describe('GET /skills', () => {
   });
 
   it('returns a single skill from the database in an array', async () => {
-    const mockClass = {
-      id: 'test-class-id',
-      name: 'Test Class',
-    };
-
     await prisma.class.create({
       data: mockClass,
     });
 
-    const mockSkill = {
-      id: 'test-skill',
-      name: 'Test Skill',
-      description: 'A test skill',
-      classId: mockClass.id,
-    };
-
-    await prisma.skill.create({ data: mockSkill });
+    await prisma.skill.create({ data: mockSkills[0] });
 
     const res = await server.inject({
       method: 'GET',
@@ -63,33 +52,13 @@ describe('GET /skills', () => {
     const { skills } = body;
 
     expect(skills).toHaveLength(1);
-    expect(skills[0]).toEqual({ ...mockSkill, class: mockClass });
+    expect(skills[0]).toEqual({ ...mockSkills[0], class: mockClass });
   });
 
   it('returns all skills from the database in an array', async () => {
-    const mockClass = {
-      id: 'test-class-id',
-      name: 'Test Class',
-    };
-
     await prisma.class.create({
       data: mockClass,
     });
-
-    const mockSkills = [
-      {
-        id: 'test-skill-1',
-        name: 'Test Skill 1',
-        description: 'A test skill',
-        classId: mockClass.id,
-      },
-      {
-        id: 'test-skill-2',
-        name: 'Test Skill 2',
-        description: 'A test skill',
-        classId: mockClass.id,
-      },
-    ];
 
     await prisma.skill.createMany({
       data: mockSkills,
