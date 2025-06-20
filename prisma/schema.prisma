@@ -21,6 +21,7 @@ model Class {
   questions   String[]
   benefits    Json
   skills      Skill[]
+  Spell       Spell[]
 }
 
 model Skill {
@@ -30,4 +31,21 @@ model Skill {
   maxRank     Int
   classId     String
   class       Class  @relation(fields: [classId], references: [id])
+}
+
+enum SpellDuration {
+  SCENE
+  INSTANTANEOUS
+}
+
+model Spell {
+  id          String        @id
+  name        String
+  description String
+  isOffensive Boolean
+  mpCost      String
+  target      String
+  duration    SpellDuration
+  classId     String
+  class       Class         @relation(fields: [classId], references: [id])
 }
