@@ -1,4 +1,6 @@
-export const skills = [
+import { type Skill } from '../../src/typings/index';
+
+export const skills: Skill[] = [
   {
     id: 'arcane-circle',
     name: 'Arcane Circle',
