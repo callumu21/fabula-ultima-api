@@ -27,6 +27,7 @@ model Skill {
   id          String @id
   name        String
   description String
+  maxRank     Int
   classId     String
   class       Class  @relation(fields: [classId], references: [id])
 }
