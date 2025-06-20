@@ -17,12 +17,14 @@ export const mockSkills = [
     id: 'test-skill-1',
     name: 'Test Skill 1',
     description: 'A test skill',
+    maxRank: 1,
     classId: mockClass.id,
   },
   {
     id: 'test-skill-2',
     name: 'Test Skill 2',
     description: 'A test skill',
+    maxRank: 2,
     classId: mockClass.id,
   },
 ];
