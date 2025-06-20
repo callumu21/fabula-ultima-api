@@ -1,9 +1,11 @@
 import { FastifyInstance } from 'fastify';
 
 export async function spellRoutes(server: FastifyInstance) {
-  server.get('/spells', async () => {
+  server.get<{ Querystring: { withClass?: string } }>('/spells', async (req) => {
+    const { withClass } = req.query;
+
     const spells = await server.prisma.spell.findMany({
-      include: { class: true },
+      include: { class: withClass === 'true' },
     });
     return { spells };
   });

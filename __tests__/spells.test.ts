@@ -56,6 +56,32 @@ describe('GET /spells', () => {
     const { spells } = body;
 
     expect(spells).toHaveLength(1);
+    expect(spells[0]).toEqual(mockSpell);
+  });
+
+  it('returns a single spell from the database in an array with class information when passed withClass query', async () => {
+    const mockClass = createMockClass();
+
+    await prisma.class.create({
+      data: mockClass,
+    });
+
+    const mockSpell = createMockSpell();
+
+    await prisma.spell.create({ data: mockSpell });
+
+    const res = await server.inject({
+      method: 'GET',
+      url: '/spells?withClass=true',
+    });
+
+    expect(res.statusCode).toBe(200);
+    const body = JSON.parse(res.body);
+    expect(Array.isArray(body.spells)).toBe(true);
+
+    const { spells } = body;
+
+    expect(spells).toHaveLength(1);
     expect(spells[0]).toEqual({ ...mockSpell, class: mockClass });
   });
 
@@ -78,6 +104,39 @@ describe('GET /spells', () => {
     const res = await server.inject({
       method: 'GET',
       url: '/spells',
+    });
+
+    expect(res.statusCode).toBe(200);
+
+    const body = JSON.parse(res.body);
+    expect(Array.isArray(body.spells)).toBe(true);
+
+    const { spells } = body;
+
+    expect(spells).toHaveLength(2);
+    expect(spells[0]).toEqual(mockSpells[0]);
+    expect(spells[1]).toEqual(mockSpells[1]);
+  });
+
+  it('returns all spells from the database in an array with class information when passed withClass query', async () => {
+    const mockClass = createMockClass();
+
+    await prisma.class.create({
+      data: mockClass,
+    });
+
+    const mockSpells = [
+      createMockSpell(),
+      createMockSpell({ id: 'mock-spell-2', name: 'Mock Spell 2' }),
+    ];
+
+    await prisma.spell.createMany({
+      data: mockSpells,
+    });
+
+    const res = await server.inject({
+      method: 'GET',
+      url: '/spells?withClass=true',
     });
 
     expect(res.statusCode).toBe(200);
