@@ -1,6 +1,6 @@
 import buildServer from '../src/server';
 import prisma from '../src/lib/prisma';
-import { mockClass, mockSkills } from './fixtures/mockData';
+import { createMockClass, createMockSkill } from './fixtures/mockData';
 
 describe('GET /skills', () => {
   const server = buildServer();
@@ -34,11 +34,15 @@ describe('GET /skills', () => {
   });
 
   it('returns a single skill from the database in an array', async () => {
+    const mockClass = createMockClass();
+
     await prisma.class.create({
       data: mockClass,
     });
 
-    await prisma.skill.create({ data: mockSkills[0] });
+    const mockSkill = createMockSkill();
+
+    await prisma.skill.create({ data: mockSkill });
 
     const res = await server.inject({
       method: 'GET',
@@ -52,13 +56,20 @@ describe('GET /skills', () => {
     const { skills } = body;
 
     expect(skills).toHaveLength(1);
-    expect(skills[0]).toEqual({ ...mockSkills[0], class: mockClass });
+    expect(skills[0]).toEqual({ ...mockSkill, class: mockClass });
   });
 
   it('returns all skills from the database in an array', async () => {
+    const mockClass = createMockClass();
+
     await prisma.class.create({
       data: mockClass,
     });
+
+    const mockSkills = [
+      createMockSkill(),
+      createMockSkill({ id: 'mock-skill-2', name: 'Mock Skill 2' }),
+    ];
 
     await prisma.skill.createMany({
       data: mockSkills,

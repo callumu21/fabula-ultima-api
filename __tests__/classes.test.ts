@@ -1,6 +1,6 @@
 import buildServer from '../src/server';
 import prisma from '../src/lib/prisma';
-import { mockClass } from './fixtures/mockData';
+import { createMockClass } from './fixtures/mockData';
 
 describe('GET /classes', () => {
   const server = buildServer();
@@ -34,6 +34,8 @@ describe('GET /classes', () => {
   });
 
   it('returns a single class from the database in an array', async () => {
+    const mockClass = createMockClass();
+
     await prisma.class.create({
       data: mockClass,
     });
@@ -54,8 +56,13 @@ describe('GET /classes', () => {
   });
 
   it('returns all skills from the database in an array', async () => {
+    const mockClasses = [
+      createMockClass(),
+      createMockClass({ id: 'test-id-2', name: 'Test Class 2' }),
+    ];
+
     await prisma.class.createMany({
-      data: [mockClass, { ...mockClass, id: 'test-id-2', name: 'Test Class 2' }],
+      data: mockClasses,
     });
 
     const res = await server.inject({
@@ -71,8 +78,8 @@ describe('GET /classes', () => {
     const { classes } = body;
 
     expect(classes).toHaveLength(2);
-    expect(classes[0]).toEqual(mockClass);
-    expect(classes[1]).toEqual({ ...mockClass, id: 'test-id-2', name: 'Test Class 2' });
+    expect(classes[0]).toEqual(mockClasses[0]);
+    expect(classes[1]).toEqual(mockClasses[1]);
   });
 
   it('returns an empty array if no skills are in the database', async () => {
