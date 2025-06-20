@@ -1,6 +1,7 @@
 import prisma from '../src/lib/prisma';
 import { classes } from './seed-data/classes';
 import { skills } from './seed-data/skills';
+import { spells } from './seed-data/spells';
 
 async function main() {
   await prisma.skill.deleteMany();
@@ -8,6 +9,7 @@ async function main() {
 
   await prisma.class.createMany({ data: classes });
   await prisma.skill.createMany({ data: skills });
+  await prisma.spell.createMany({ data: spells });
 
   console.log('Seed data created!');
 }
