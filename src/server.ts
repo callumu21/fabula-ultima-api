@@ -2,6 +2,7 @@ import Fastify from 'fastify';
 import prismaPlugin from './plugins/prisma';
 import { classRoutes } from './routes/classes';
 import { skillRoutes } from './routes/skills';
+import { spellRoutes } from './routes/spells';
 
 const buildServer = () => {
   const app = Fastify();
@@ -14,6 +15,7 @@ const buildServer = () => {
 
   app.register(classRoutes);
   app.register(skillRoutes);
+  app.register(spellRoutes);
 
   return app;
 };
