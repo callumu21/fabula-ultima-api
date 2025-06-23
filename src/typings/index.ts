@@ -1,10 +1,18 @@
+type BonusStat = 'MP' | 'HP' | 'IP';
+
 type Bonus =
   | {
-      stat: string;
+      stat: BonusStat;
       increase: number;
     }
   | {
-      proficieny: 'Ritualism';
+      proficiency:
+        | 'Ritualism'
+        | 'Projects'
+        | 'martial melee weapons'
+        | 'martial ranged weapons'
+        | 'martial shields'
+        | 'martial armour';
     };
 
 type ClassBenefit = {
