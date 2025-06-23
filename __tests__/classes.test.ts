@@ -95,3 +95,71 @@ describe('GET /classes', () => {
     expect(body.classes).toHaveLength(0);
   });
 });
+
+describe('GET /classes/:id', () => {
+  const server = buildServer();
+
+  beforeAll(async () => {
+    await server.ready();
+  });
+
+  beforeEach(async () => {
+    const tableNames = await prisma.$queryRaw<
+      Array<{ tablename: string }>
+    >`SELECT tablename FROM pg_tables WHERE schemaname='public'`;
+
+    const truncationPromises = tableNames.map(({ tablename }) => {
+      if (tablename !== '_prisma_migrations') {
+        return prisma
+          .$executeRawUnsafe(`TRUNCATE TABLE "public"."${tablename}" CASCADE;`)
+          .catch((err) => {
+            console.error(err);
+          });
+      }
+      return null;
+    });
+
+    await Promise.all(truncationPromises);
+  });
+
+  afterAll(async () => {
+    await server.close();
+    return prisma.$disconnect();
+  });
+
+  it('returns a single matching class from the database', async () => {
+    const mockClass = createMockClass({ id: 'test-class' });
+
+    await prisma.class.create({
+      data: mockClass,
+    });
+
+    const res = await server.inject({
+      method: 'GET',
+      url: '/classes/test-class',
+    });
+
+    expect(res.statusCode).toBe(200);
+    const body = JSON.parse(res.body);
+
+    expect(body.class).toEqual(mockClass);
+  });
+
+  it('returns a 404 and message if no matching class exists', async () => {
+    const mockClass = createMockClass({ id: 'test-class' });
+
+    await prisma.class.create({
+      data: mockClass,
+    });
+
+    const res = await server.inject({
+      method: 'GET',
+      url: '/classes/not-a-class',
+    });
+
+    expect(res.statusCode).toBe(404);
+    const body = JSON.parse(res.body);
+
+    expect(body.msg).toEqual('Class not found');
+  });
+});
