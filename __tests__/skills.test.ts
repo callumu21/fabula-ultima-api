@@ -105,3 +105,81 @@ describe('GET /skills', () => {
     expect(body.skills).toHaveLength(0);
   });
 });
+
+describe('GET /skills/:id', () => {
+  const server = buildServer();
+
+  beforeAll(async () => {
+    await server.ready();
+  });
+
+  beforeEach(async () => {
+    const tableNames = await prisma.$queryRaw<
+      Array<{ tablename: string }>
+    >`SELECT tablename FROM pg_tables WHERE schemaname='public'`;
+
+    const truncationPromises = tableNames.map(({ tablename }) => {
+      if (tablename !== '_prisma_migrations') {
+        return prisma
+          .$executeRawUnsafe(`TRUNCATE TABLE "public"."${tablename}" CASCADE;`)
+          .catch((err) => {
+            console.error(err);
+          });
+      }
+      return null;
+    });
+
+    await Promise.all(truncationPromises);
+  });
+
+  afterAll(async () => {
+    await server.close();
+    return prisma.$disconnect();
+  });
+
+  it('returns a single matching skill and class information from the database', async () => {
+    const mockClass = createMockClass();
+
+    await prisma.class.create({
+      data: mockClass,
+    });
+
+    const provokeSkill = createMockSkill({ id: 'provoke' });
+
+    await prisma.skill.create({ data: provokeSkill });
+
+    const res = await server.inject({
+      method: 'GET',
+      url: '/skills/provoke',
+    });
+
+    expect(res.statusCode).toBe(200);
+    const body = JSON.parse(res.body);
+
+    const { skill } = body;
+
+    expect(skill).toEqual({ ...provokeSkill, class: mockClass });
+  });
+
+  it('returns a 404 and message if no matching skill exists', async () => {
+    const mockClass = createMockClass();
+
+    await prisma.class.create({
+      data: mockClass,
+    });
+
+    const provokeSkill = createMockSkill({ id: 'provoke' });
+
+    await prisma.skill.create({ data: provokeSkill });
+
+    const res = await server.inject({
+      method: 'GET',
+      url: '/skills/not-a-skill',
+    });
+
+    expect(res.statusCode).toBe(404);
+    const body = JSON.parse(res.body);
+
+    expect(body.msg).toEqual('Skill not found');
+  });
+});
