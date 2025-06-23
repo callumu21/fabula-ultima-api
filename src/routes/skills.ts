@@ -1,19 +1,22 @@
 import { FastifyInstance } from 'fastify';
 
 export async function skillRoutes(server: FastifyInstance) {
-  server.get('/skills', async () => {
+  server.get<{ Querystring: { withClass?: string } }>('/skills', async (req) => {
+    const { withClass } = req.query;
+
     const skills = await server.prisma.skill.findMany({
-      include: { class: true },
+      include: { class: withClass === 'true' },
     });
     return { skills };
   });
 
-  server.get('/skills/:id', async (req, res) => {
+  server.get<{ Querystring: { withClass?: string } }>('/skills/:id', async (req, res) => {
     const { id } = req.params as { id: string };
+    const { withClass } = req.query;
 
     const skill = await server.prisma.skill.findUnique({
       where: { id },
-      include: { class: true },
+      include: { class: withClass === 'true' },
     });
 
     if (!skill) {

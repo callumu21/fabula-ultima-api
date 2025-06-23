@@ -119,15 +119,16 @@ describe('GET /spells', () => {
   });
 
   it('returns all spells from the database in an array with class information when passed withClass query', async () => {
-    const mockClass = createMockClass();
+    const mockClass1 = createMockClass();
+    const mockClass2 = createMockClass({ id: 'mock-class-2', name: 'Mock Class 2' });
 
-    await prisma.class.create({
-      data: mockClass,
+    await prisma.class.createMany({
+      data: [mockClass1, mockClass2],
     });
 
     const mockSpells = [
       createMockSpell(),
-      createMockSpell({ id: 'mock-spell-2', name: 'Mock Spell 2' }),
+      createMockSpell({ id: 'mock-spell-2', name: 'Mock Spell 2', classId: 'mock-class-2' }),
     ];
 
     await prisma.spell.createMany({
@@ -147,8 +148,8 @@ describe('GET /spells', () => {
     const { spells } = body;
 
     expect(spells).toHaveLength(2);
-    expect(spells[0]).toEqual({ ...mockSpells[0], class: mockClass });
-    expect(spells[1]).toEqual({ ...mockSpells[1], class: mockClass });
+    expect(spells[0]).toEqual({ ...mockSpells[0], class: mockClass1 });
+    expect(spells[1]).toEqual({ ...mockSpells[1], class: mockClass2 });
   });
 
   it('returns an empty array if no skills are in the database', async () => {
@@ -196,7 +197,7 @@ describe('GET /spells/:id', () => {
     return prisma.$disconnect();
   });
 
-  it('returns a single matching spell and class information from the database', async () => {
+  it('returns a single matching spell from the database', async () => {
     const mockClass = createMockClass();
 
     await prisma.class.create({
@@ -210,6 +211,30 @@ describe('GET /spells/:id', () => {
     const res = await server.inject({
       method: 'GET',
       url: '/spells/elemental-shroud',
+    });
+
+    expect(res.statusCode).toBe(200);
+    const body = JSON.parse(res.body);
+
+    const { spell } = body;
+
+    expect(spell).toEqual(elementalShroudSpell);
+  });
+
+  it('returns a single matching spell with class information when passed withClass query', async () => {
+    const mockClass = createMockClass();
+
+    await prisma.class.create({
+      data: mockClass,
+    });
+
+    const elementalShroudSpell = createMockSpell({ id: 'elemental-shroud' });
+
+    await prisma.spell.create({ data: elementalShroudSpell });
+
+    const res = await server.inject({
+      method: 'GET',
+      url: '/spells/elemental-shroud?withClass=true',
     });
 
     expect(res.statusCode).toBe(200);

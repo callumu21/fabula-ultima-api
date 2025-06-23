@@ -10,12 +10,13 @@ export async function spellRoutes(server: FastifyInstance) {
     return { spells };
   });
 
-  server.get('/spells/:id', async (req, res) => {
+  server.get<{ Querystring: { withClass?: string } }>('/spells/:id', async (req, res) => {
     const { id } = req.params as { id: string };
+    const { withClass } = req.query;
 
     const spell = await server.prisma.spell.findUnique({
       where: { id },
-      include: { class: true },
+      include: { class: withClass === 'true' },
     });
 
     if (!spell) {
