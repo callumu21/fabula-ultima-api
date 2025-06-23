@@ -4,6 +4,7 @@ import { skills } from './seed-data/skills';
 import { spells } from './seed-data/spells';
 
 async function main() {
+  await prisma.spell.deleteMany();
   await prisma.skill.deleteMany();
   await prisma.class.deleteMany();
 
