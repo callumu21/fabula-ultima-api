@@ -38,7 +38,7 @@ export const createMockSpell: MockFactory<Spell> = (overrides = {}) => {
     isOffensive: false,
     mpCost: '10',
     target: '3 creatures',
-    duration: 'INSTANTANEOUS',
+    duration: 'instantaneous',
     classId: createMockClass().id,
     ...overrides,
   };
