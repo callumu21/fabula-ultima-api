@@ -37,7 +37,7 @@ export interface Skill {
   classId: string;
 }
 
-type SpellDuration = 'SCENE' | 'INSTANTANEOUS';
+type SpellDuration = 'scene' | 'instantaneous';
 
 export interface Spell {
   id: string;
@@ -71,7 +71,6 @@ type WeaponType =
   | 'thrown';
 
 export type Weapon = EquipmentBase & {
-  type: 'weapon';
   category: WeaponType;
   isMartial: boolean;
   handsRequired: 1 | 2;
@@ -82,8 +81,6 @@ export type Weapon = EquipmentBase & {
 };
 
 export type Armour = EquipmentBase & {
-  type: 'armour';
-  category: 'armour';
   isMartial: boolean;
   usesDex: boolean;
   dexBonus: number;
@@ -93,8 +90,6 @@ export type Armour = EquipmentBase & {
 };
 
 export type Shield = EquipmentBase & {
-  type: 'armour';
-  category: 'shield';
   isMartial: boolean;
   defenseBonus: number;
   magicDefenseBonus: number;
