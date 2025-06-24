@@ -49,3 +49,56 @@ export interface Spell {
   duration: SpellDuration;
   classId: string;
 }
+
+interface EquipmentBase {
+  id: string;
+  name: string;
+  cost: number;
+  isBasic: boolean;
+  quality: null | string;
+}
+
+type WeaponType =
+  | 'arcane'
+  | 'bow'
+  | 'brawling'
+  | 'dagger'
+  | 'firearm'
+  | 'flail'
+  | 'heavy'
+  | 'spear'
+  | 'sword'
+  | 'thrown';
+
+export type Weapon = EquipmentBase & {
+  type: 'weapon';
+  category: WeaponType;
+  isMartial: boolean;
+  handsRequired: 1 | 2;
+  range: 'melee' | 'ranged';
+  accuracy: string;
+  damage: string;
+  damageType: 'physical' | 'magical';
+};
+
+export type Armour = EquipmentBase & {
+  type: 'armour';
+  category: 'armour';
+  isMartial: boolean;
+  usesDex: boolean;
+  dexBonus: number;
+  usesIns: boolean;
+  insBonus: number;
+  initiativeBonus: number;
+};
+
+export type Shield = EquipmentBase & {
+  type: 'armour';
+  category: 'shield';
+  isMartial: boolean;
+  defenseBonus: number;
+  magicDefenseBonus: number;
+  initiativeBonus: number;
+};
+
+export type Equipment = Shield | Armour | Weapon;
