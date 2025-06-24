@@ -34,8 +34,8 @@ model Skill {
 }
 
 enum SpellDuration {
-  SCENE
-  INSTANTANEOUS
+  scene
+  instantaneous
 }
 
 model Spell {
@@ -48,4 +48,68 @@ model Spell {
   duration    SpellDuration
   classId     String
   class       Class         @relation(fields: [classId], references: [id])
+}
+
+enum WeaponCategory {
+  arcane
+  bow
+  brawling
+  dagger
+  firearm
+  flail
+  heavy
+  spear
+  sword
+  thrown
+}
+
+enum Range {
+  melee
+  ranged
+}
+
+enum DamageType {
+  physical
+  magical
+}
+
+model Weapon {
+  id            String         @id
+  name          String
+  category      WeaponCategory
+  isBasic       Boolean
+  isMartial     Boolean
+  cost          Int
+  handsRequired Int
+  range         Range
+  accuracy      String
+  damage        String
+  damageType    DamageType
+  quality       String?
+}
+
+model Armour {
+  id              String  @id
+  name            String
+  cost            Int
+  isBasic         Boolean
+  isMartial       Boolean
+  usesDex         Boolean
+  dexBonus        Int
+  usesIns         Boolean
+  insBonus        Int
+  initiativeBonus Int
+  quality         String?
+}
+
+model Shield {
+  id                String  @id
+  name              String
+  cost              Int
+  isBasic           Boolean
+  isMartial         Boolean
+  defenseBonus      Int
+  magicDefenseBonus Int
+  initiativeBonus   Int
+  quality           String?
 }
