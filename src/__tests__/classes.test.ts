@@ -1,5 +1,5 @@
-import buildServer from '../src/server';
-import prisma from '../src/lib/prisma';
+import buildServer from '../server';
+import prisma from '../lib/prisma';
 import { createMockClass } from './fixtures/mockData';
 
 describe('GET /classes', () => {
