@@ -1,4 +1,4 @@
-import { type Class, type Skill, type Spell, type Weapon } from '../../src/typings/index';
+import { type Class, type Skill, type Spell, type Weapon } from '../../typings/index';
 
 type MockFactory<T> = (overrides?: Partial<T>) => T;
 
