@@ -157,3 +157,67 @@ describe('GET /weapons/:id', () => {
     expect(body.msg).toEqual('Weapon not found');
   });
 });
+
+describe.only('DELETE /weapons/:id', () => {
+  const server = buildServer();
+
+  beforeAll(async () => {
+    await server.ready();
+  });
+
+  beforeEach(async () => {
+    const tableNames = await prisma.$queryRaw<
+      Array<{ tablename: string }>
+    >`SELECT tablename FROM pg_tables WHERE schemaname='public'`;
+
+    const truncationPromises = tableNames.map(({ tablename }) => {
+      if (tablename !== '_prisma_migrations') {
+        return prisma
+          .$executeRawUnsafe(`TRUNCATE TABLE "public"."${tablename}" CASCADE;`)
+          .catch((err) => {
+            console.error(err);
+          });
+      }
+      return null;
+    });
+
+    await Promise.all(truncationPromises);
+  });
+
+  afterAll(async () => {
+    await server.close();
+    return prisma.$disconnect();
+  });
+
+  it('deletes a single wepon from the database and returns a 204', async () => {
+    const greatsword = createMockWeapon({ id: 'greatsword' });
+
+    await prisma.weapon.create({ data: greatsword });
+
+    const deleteRes = await server.inject({
+      method: 'DELETE',
+      url: '/weapons/greatsword',
+    });
+
+    expect(deleteRes.statusCode).toBe(204);
+
+    const fetchRes = await server.inject({
+      method: 'GET',
+      url: '/weapons/greatsword',
+    });
+
+    expect(fetchRes.statusCode).toBe(404);
+  });
+
+  it('returns a 404 and error message if id is not associated with a weapon', async () => {
+    const res = await server.inject({
+      method: 'DELETE',
+      url: '/weapons/not-a-weapon',
+    });
+
+    expect(res.statusCode).toBe(404);
+
+    const body = JSON.parse(res.body);
+    expect(body.msg).toEqual('Weapon not found.');
+  });
+});
