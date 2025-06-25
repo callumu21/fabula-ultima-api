@@ -2,13 +2,19 @@ import { FastifyReply, FastifyRequest } from 'fastify';
 import { findAllSkills, findSkillById } from '../models/skills';
 
 export const getAllSkills = async (
-  req: FastifyRequest<{ Querystring: { withClass?: string } }>
+  req: FastifyRequest<{ Querystring: { withClass?: string } }>,
+  reply: FastifyReply
 ) => {
   const { withClass } = req.query;
 
-  const skills = await findAllSkills({ withClass });
+  try {
+    const skills = await findAllSkills({ withClass });
 
-  return { skills };
+    return { skills };
+  } catch (err) {
+    console.error('Unexpected error', err);
+    return reply.code(500).send({ msg: 'Internal server error.' });
+  }
 };
 
 export const getSkillById = async (
@@ -18,11 +24,16 @@ export const getSkillById = async (
   const { id } = req.params;
   const { withClass } = req.query;
 
-  const skill = await findSkillById({ id, withClass });
+  try {
+    const skill = await findSkillById({ id, withClass });
 
-  if (!skill) {
-    return reply.code(404).send({ msg: 'Skill not found' });
+    if (!skill) {
+      return reply.code(404).send({ msg: 'Skill not found' });
+    }
+
+    return { skill };
+  } catch (err) {
+    console.error('Unexpected error', err);
+    return reply.code(500).send({ msg: 'Internal server error.' });
   }
-
-  return { skill };
 };
