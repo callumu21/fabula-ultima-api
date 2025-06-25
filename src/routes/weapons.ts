@@ -5,5 +5,5 @@ export const weaponRoutes = async (server: FastifyInstance) => {
   server.get('/weapons', getAllWeapons);
 
   server.get('/weapons/:id', getWeaponById);
-  server.delete('/weapons/:id', handleDeleteWeaponById);
+  server.delete('/weapons/:id', { preHandler: server.authenticate }, handleDeleteWeaponById);
 };

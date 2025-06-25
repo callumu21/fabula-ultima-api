@@ -1,6 +1,7 @@
-import buildServer from '../src/server';
-import prisma from '../src/lib/prisma';
+import buildServer from '../server';
+import prisma from '../lib/prisma';
 import { createMockWeapon } from './fixtures/mockData';
+import { getTestToken } from './utils';
 
 describe('GET /weapons', () => {
   const server = buildServer();
@@ -158,7 +159,7 @@ describe('GET /weapons/:id', () => {
   });
 });
 
-describe.only('DELETE /weapons/:id', () => {
+describe('DELETE /weapons/:id', () => {
   const server = buildServer();
 
   beforeAll(async () => {
@@ -189,7 +190,9 @@ describe.only('DELETE /weapons/:id', () => {
     return prisma.$disconnect();
   });
 
-  it('deletes a single wepon from the database and returns a 204', async () => {
+  it('deletes a single weapon from the database and returns a 204 with valid JWT', async () => {
+    const token = getTestToken(server);
+
     const greatsword = createMockWeapon({ id: 'greatsword' });
 
     await prisma.weapon.create({ data: greatsword });
@@ -197,6 +200,9 @@ describe.only('DELETE /weapons/:id', () => {
     const deleteRes = await server.inject({
       method: 'DELETE',
       url: '/weapons/greatsword',
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     });
 
     expect(deleteRes.statusCode).toBe(204);
@@ -209,15 +215,38 @@ describe.only('DELETE /weapons/:id', () => {
     expect(fetchRes.statusCode).toBe(404);
   });
 
-  it('returns a 404 and error message if id is not associated with a weapon', async () => {
+  it('returns a 404 and error message if id is not associated with a weapon and JWT is valid', async () => {
+    const token = getTestToken(server);
+
     const res = await server.inject({
       method: 'DELETE',
       url: '/weapons/not-a-weapon',
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     });
 
     expect(res.statusCode).toBe(404);
 
     const body = JSON.parse(res.body);
     expect(body.msg).toEqual('Weapon not found.');
+  });
+
+  it('returns a 401 and error message if JWT is invalid', async () => {
+    const invalidToken = 'kajsdlkjaslkdjas';
+
+    const res = await server.inject({
+      method: 'DELETE',
+      url: '/weapons/not-a-weapon',
+      headers: {
+        Authorization: `Bearer ${invalidToken}`,
+      },
+    });
+
+    expect(res.statusCode).toBe(401);
+
+    const body = JSON.parse(res.body);
+
+    expect(body.code).toEqual('FST_JWT_AUTHORIZATION_TOKEN_INVALID');
   });
 });

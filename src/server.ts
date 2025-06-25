@@ -1,4 +1,5 @@
 import Fastify from 'fastify';
+import authPlugin from './plugins/auth';
 import prismaPlugin from './plugins/prisma';
 import { classRoutes } from './routes/classes';
 import { skillRoutes } from './routes/skills';
@@ -8,6 +9,7 @@ import { weaponRoutes } from './routes/weapons';
 const buildServer = () => {
   const app = Fastify();
 
+  app.register(authPlugin);
   app.register(prismaPlugin);
 
   app.get('/healthcheck', async () => {
