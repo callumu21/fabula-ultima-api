@@ -1,4 +1,4 @@
-import { FastifyReply, FastifyRequest, RouteGenericInterface } from 'fastify';
+import { FastifyReply, FastifyRequest } from 'fastify';
 import { PrismaClientKnownRequestError } from '../../generated/prisma/runtime/library';
 import { deleteWeaponById, findAllWeapons, findWeaponById } from '../models/weapons';
 
@@ -33,14 +33,8 @@ export const getWeaponById = async (
   }
 };
 
-interface DeleteWeaponRequest extends RouteGenericInterface {
-  Params: {
-    id: string;
-  };
-}
-
 export const handleDeleteWeaponById = async (
-  req: FastifyRequest<DeleteWeaponRequest>,
+  req: FastifyRequest<{ Params: { id: string } }>,
   reply: FastifyReply
 ) => {
   const { id } = req.params;
