@@ -1,10 +1,10 @@
 import Fastify from 'fastify';
 import authPlugin from './plugins/auth';
 import prismaPlugin from './plugins/prisma';
-import { classRoutes } from './routes/classes';
-import { skillRoutes } from './routes/skills';
-import { spellRoutes } from './routes/spells';
-import { weaponRoutes } from './routes/weapons';
+import classRoutes from './routes/classes';
+import skillRoutes from './routes/skills';
+import spellRoutes from './routes/spells';
+import weaponRoutes from './routes/weapons';
 
 const buildServer = () => {
   const app = Fastify();
