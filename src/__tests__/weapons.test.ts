@@ -190,8 +190,8 @@ describe('DELETE /weapons/:id', () => {
     return prisma.$disconnect();
   });
 
-  it('deletes a single weapon from the database and returns a 204 with valid JWT', async () => {
-    const token = getTestToken(server);
+  it('deletes a single weapon from the database and returns a 204 with valid JWT and role is ADMIN', async () => {
+    const token = getTestToken(server, { role: 'ADMIN' });
 
     const greatsword = createMockWeapon({ id: 'greatsword' });
 
@@ -215,8 +215,8 @@ describe('DELETE /weapons/:id', () => {
     expect(fetchRes.statusCode).toBe(404);
   });
 
-  it('returns a 404 and error message if id is not associated with a weapon and JWT is valid', async () => {
-    const token = getTestToken(server);
+  it('returns a 404 and error message if id is not associated with a weapon and JWT is valid and role is ADMIN', async () => {
+    const token = getTestToken(server, { role: 'ADMIN' });
 
     const res = await server.inject({
       method: 'DELETE',
@@ -230,6 +230,24 @@ describe('DELETE /weapons/:id', () => {
 
     const body = JSON.parse(res.body);
     expect(body.msg).toEqual('Weapon not found.');
+  });
+
+  it('returns a 403 and error message if JWT is valid but role is PLAYER', async () => {
+    const invalidToken = getTestToken(server, { role: 'PLAYER' });
+
+    const res = await server.inject({
+      method: 'DELETE',
+      url: '/weapons/not-a-weapon',
+      headers: {
+        Authorization: `Bearer ${invalidToken}`,
+      },
+    });
+
+    expect(res.statusCode).toBe(403);
+
+    const body = JSON.parse(res.body);
+
+    expect(body.msg).toEqual('Invalid authorisation.');
   });
 
   it('returns a 401 and error message if JWT is invalid', async () => {
