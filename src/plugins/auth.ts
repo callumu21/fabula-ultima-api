@@ -19,6 +19,17 @@ const authPlugin: FastifyPluginAsync = fp(async (server) => {
       reply.send(err);
     }
   });
+
+  server.decorate('authorizeAdmin', async function (req, reply) {
+    try {
+      await req.jwtVerify();
+      if (req.user.role !== 'ADMIN') {
+        return reply.code(403).send({ msg: 'Invalid authorisation.' });
+      }
+    } catch (err) {
+      reply.send(err);
+    }
+  });
 });
 
 export default authPlugin;

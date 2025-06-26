@@ -2,7 +2,7 @@ import { FastifyInstance } from 'fastify';
 
 type PlayerDetails = {
   userId: number;
-  role: 'admin' | 'player';
+  role: 'ADMIN' | 'PLAYER';
 };
 
 export const getTestToken = (
@@ -11,7 +11,7 @@ export const getTestToken = (
 ): string => {
   const payload: PlayerDetails = {
     userId: 1,
-    role: 'admin',
+    role: 'PLAYER',
     ...overrides,
   };
 
