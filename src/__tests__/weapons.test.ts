@@ -1,7 +1,7 @@
 import buildServer from '../server';
 import prisma from '../lib/prisma';
 import { createMockWeapon } from './fixtures/mockData';
-import { getTestToken } from './utils';
+import { getTestToken, resetDb } from './utils';
 
 describe('GET /weapons', () => {
   const server = buildServer();
@@ -11,22 +11,7 @@ describe('GET /weapons', () => {
   });
 
   beforeEach(async () => {
-    const tableNames = await prisma.$queryRaw<
-      Array<{ tablename: string }>
-    >`SELECT tablename FROM pg_tables WHERE schemaname='public'`;
-
-    const truncationPromises = tableNames.map(({ tablename }) => {
-      if (tablename !== '_prisma_migrations') {
-        return prisma
-          .$executeRawUnsafe(`TRUNCATE TABLE "public"."${tablename}" CASCADE;`)
-          .catch((err) => {
-            console.error(err);
-          });
-      }
-      return null;
-    });
-
-    await Promise.all(truncationPromises);
+    await resetDb(prisma);
   });
 
   afterAll(async () => {
@@ -105,22 +90,7 @@ describe('GET /weapons/:id', () => {
   });
 
   beforeEach(async () => {
-    const tableNames = await prisma.$queryRaw<
-      Array<{ tablename: string }>
-    >`SELECT tablename FROM pg_tables WHERE schemaname='public'`;
-
-    const truncationPromises = tableNames.map(({ tablename }) => {
-      if (tablename !== '_prisma_migrations') {
-        return prisma
-          .$executeRawUnsafe(`TRUNCATE TABLE "public"."${tablename}" CASCADE;`)
-          .catch((err) => {
-            console.error(err);
-          });
-      }
-      return null;
-    });
-
-    await Promise.all(truncationPromises);
+    await resetDb(prisma);
   });
 
   afterAll(async () => {
@@ -167,22 +137,7 @@ describe('DELETE /weapons/:id', () => {
   });
 
   beforeEach(async () => {
-    const tableNames = await prisma.$queryRaw<
-      Array<{ tablename: string }>
-    >`SELECT tablename FROM pg_tables WHERE schemaname='public'`;
-
-    const truncationPromises = tableNames.map(({ tablename }) => {
-      if (tablename !== '_prisma_migrations') {
-        return prisma
-          .$executeRawUnsafe(`TRUNCATE TABLE "public"."${tablename}" CASCADE;`)
-          .catch((err) => {
-            console.error(err);
-          });
-      }
-      return null;
-    });
-
-    await Promise.all(truncationPromises);
+    await resetDb(prisma);
   });
 
   afterAll(async () => {

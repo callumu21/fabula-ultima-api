@@ -1,6 +1,7 @@
 import buildServer from '../server';
 import prisma from '../lib/prisma';
 import { createMockClass } from './fixtures/mockData';
+import { resetDb } from './utils';
 
 describe('GET /classes', () => {
   const server = buildServer();
@@ -10,22 +11,7 @@ describe('GET /classes', () => {
   });
 
   beforeEach(async () => {
-    const tableNames = await prisma.$queryRaw<
-      Array<{ tablename: string }>
-    >`SELECT tablename FROM pg_tables WHERE schemaname='public'`;
-
-    const truncationPromises = tableNames.map(({ tablename }) => {
-      if (tablename !== '_prisma_migrations') {
-        return prisma
-          .$executeRawUnsafe(`TRUNCATE TABLE "public"."${tablename}" CASCADE;`)
-          .catch((err) => {
-            console.error(err);
-          });
-      }
-      return null;
-    });
-
-    await Promise.all(truncationPromises);
+    await resetDb(prisma);
   });
 
   afterAll(async () => {
@@ -104,22 +90,7 @@ describe('GET /classes/:id', () => {
   });
 
   beforeEach(async () => {
-    const tableNames = await prisma.$queryRaw<
-      Array<{ tablename: string }>
-    >`SELECT tablename FROM pg_tables WHERE schemaname='public'`;
-
-    const truncationPromises = tableNames.map(({ tablename }) => {
-      if (tablename !== '_prisma_migrations') {
-        return prisma
-          .$executeRawUnsafe(`TRUNCATE TABLE "public"."${tablename}" CASCADE;`)
-          .catch((err) => {
-            console.error(err);
-          });
-      }
-      return null;
-    });
-
-    await Promise.all(truncationPromises);
+    await resetDb(prisma);
   });
 
   afterAll(async () => {
