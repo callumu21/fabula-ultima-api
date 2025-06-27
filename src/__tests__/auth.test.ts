@@ -123,12 +123,7 @@ describe('POST /auth/register', () => {
 
     const body = JSON.parse(res.body);
 
-    expect(body).toEqual({
-      code: 'FST_ERR_VALIDATION',
-      error: 'Bad Request',
-      message: "body must have required property 'email'",
-      statusCode: 400,
-    });
+    expect(body.msg).toBe('Email is a required field.');
   });
 
   it('returns 400 and invalid email error message if payload has invalid email and role is ADMIN', async () => {
@@ -152,20 +147,14 @@ describe('POST /auth/register', () => {
 
     const body = JSON.parse(res.body);
 
-    expect(body).toEqual({
-      code: 'FST_ERR_VALIDATION',
-      error: 'Bad Request',
-      // prettier-ignore
-      message: "body/email must match format \"email\"",
-      statusCode: 400,
-    });
+    expect(body.msg).toBe('Email must be a valid email address.');
   });
 
   it('returns 400 and missing password error message if payload has no password and role is ADMIN', async () => {
     const validToken = getTestToken(server, { role: 'ADMIN' });
 
     const newUserPayload = {
-      email: 'asjh',
+      email: 'email@valid.com',
     };
 
     const res = await server.inject({
@@ -181,12 +170,7 @@ describe('POST /auth/register', () => {
 
     const body = JSON.parse(res.body);
 
-    expect(body).toEqual({
-      code: 'FST_ERR_VALIDATION',
-      error: 'Bad Request',
-      message: "body must have required property 'password'",
-      statusCode: 400,
-    });
+    expect(body.msg).toBe('Password is a required field.');
   });
 
   it('returns 400 and invalid password error message if payload has password less than 8 characters and role is ADMIN', async () => {
@@ -210,12 +194,7 @@ describe('POST /auth/register', () => {
 
     const body = JSON.parse(res.body);
 
-    expect(body).toEqual({
-      code: 'FST_ERR_VALIDATION',
-      error: 'Bad Request',
-      message: 'body/password must NOT have fewer than 8 characters',
-      statusCode: 400,
-    });
+    expect(body.msg).toBe('Password must not be fewer than 8 characters.');
   });
 
   it('returns 400 and invalid password error message if payload has password more than 40 characters and role is ADMIN', async () => {
@@ -239,12 +218,7 @@ describe('POST /auth/register', () => {
 
     const body = JSON.parse(res.body);
 
-    expect(body).toEqual({
-      code: 'FST_ERR_VALIDATION',
-      error: 'Bad Request',
-      message: 'body/password must NOT have more than 40 characters',
-      statusCode: 400,
-    });
+    expect(body.msg).toBe('Password must not exceed 40 characters.');
   });
 
   it('returns 403 and error message if payload is valid but token role is PLAYER', async () => {
