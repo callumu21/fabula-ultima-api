@@ -1,6 +1,8 @@
 import { FastifyReply, FastifyRequest } from 'fastify';
 import { PrismaClientKnownRequestError } from '../../generated/prisma/runtime/library';
-import { deleteWeaponById, findAllWeapons, findWeaponById } from '../models/weapons';
+import { createWeapon, deleteWeaponById, findAllWeapons, findWeaponById } from '../models/weapons';
+import { Weapon } from '../typings';
+import { createIdFromName } from '../utils';
 
 export const getAllWeapons = async (_req: FastifyRequest, reply: FastifyReply) => {
   try {
@@ -10,6 +12,49 @@ export const getAllWeapons = async (_req: FastifyRequest, reply: FastifyReply) =
   } catch (err) {
     console.error('Unexpected error', err);
     return reply.status(500).send({ msg: 'Internal server error.' });
+  }
+};
+
+export const handleCreateWeapon = async (
+  req: FastifyRequest<{ Body: Omit<Weapon, 'id'> }>,
+  reply: FastifyReply
+) => {
+  const {
+    name,
+    category,
+    isMartial,
+    handsRequired,
+    range,
+    accuracy,
+    damage,
+    damageType,
+    cost,
+    isBasic,
+    quality,
+  } = req.body;
+
+  const id = createIdFromName(name);
+
+  try {
+    const newWeapon = await createWeapon({
+      id,
+      name,
+      category,
+      isMartial,
+      handsRequired,
+      range,
+      accuracy,
+      damage,
+      damageType,
+      cost,
+      isBasic,
+      quality,
+    });
+
+    return reply.code(201).send({ weapon: newWeapon });
+  } catch (err) {
+    console.error(err);
+    return reply.code(500).send({ msg: 'Internal server error.' });
   }
 };
 
