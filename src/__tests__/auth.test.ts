@@ -47,6 +47,34 @@ describe('POST /auth/register', () => {
     });
   });
 
+  it('creates a new user with valid email and password and ignores extra fields', async () => {
+    const validToken = getTestToken(server, { role: 'ADMIN' });
+
+    const newUserPayload = {
+      email: 'valid@email.com',
+      password: 'abc123def456',
+      name: 'Mary Loops',
+    };
+
+    const res = await server.inject({
+      method: 'POST',
+      url: '/auth/register',
+      body: newUserPayload,
+      headers: {
+        Authorization: `Bearer ${validToken}`,
+      },
+    });
+
+    expect(res.statusCode).toBe(201);
+
+    const body = JSON.parse(res.body);
+
+    expect(body.user).toEqual({
+      id: expect.any(Number),
+      email: newUserPayload.email,
+    });
+  });
+
   it('returns 400 if payload is valid but email address is taken', async () => {
     const validToken = getTestToken(server, { role: 'ADMIN' });
 
@@ -276,6 +304,32 @@ describe('POST /auth/login', () => {
       body: {
         email: mockUser.email,
         password: 'password123',
+      },
+    });
+
+    expect(res.statusCode).toBe(200);
+
+    const body = JSON.parse(res.body);
+
+    expect(body).toHaveProperty('token');
+    expect(typeof body.token).toBe('string');
+  });
+
+  it('logs in an existing user with valid credentials even if payload has extra fields', async () => {
+    const mockUser = createMockUser({
+      email: 'example@email.com',
+      password: await hashPassword('password123'),
+    });
+
+    await prisma.user.create({ data: mockUser });
+
+    const res = await server.inject({
+      method: 'POST',
+      url: '/auth/login',
+      body: {
+        email: mockUser.email,
+        password: 'password123',
+        name: 'Mary Loops',
       },
     });
 
