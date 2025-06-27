@@ -97,3 +97,8 @@ export type Shield = EquipmentBase & {
 };
 
 export type Equipment = Shield | Armour | Weapon;
+
+export type User = {
+  email: string;
+  password: string;
+};

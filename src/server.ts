@@ -1,6 +1,7 @@
 import Fastify from 'fastify';
 import authPlugin from './plugins/auth';
 import prismaPlugin from './plugins/prisma';
+import authRoutes from './routes/auth';
 import classRoutes from './routes/classes';
 import skillRoutes from './routes/skills';
 import spellRoutes from './routes/spells';
@@ -11,6 +12,8 @@ const buildServer = () => {
 
   app.register(authPlugin);
   app.register(prismaPlugin);
+
+  app.register(authRoutes);
 
   app.get('/healthcheck', async () => {
     return { status: 'ok' };

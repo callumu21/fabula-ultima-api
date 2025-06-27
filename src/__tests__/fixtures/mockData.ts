@@ -1,4 +1,4 @@
-import { type Class, type Skill, type Spell, type Weapon } from '../../typings/index';
+import { type Class, type Skill, type Spell, type Weapon, type User } from '../../typings/index';
 
 type MockFactory<T> = (overrides?: Partial<T>) => T;
 
@@ -58,6 +58,14 @@ export const createMockWeapon: MockFactory<Weapon> = (overrides = {}) => {
     damage: '[HR + 6]',
     damageType: 'physical',
     quality: null,
+    ...overrides,
+  };
+};
+
+export const createMockUser: MockFactory<User> = (overrides = {}) => {
+  return {
+    email: 'test@user.com',
+    password: 'password',
     ...overrides,
   };
 };
