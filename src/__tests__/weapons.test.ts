@@ -1323,7 +1323,7 @@ describe('GET /weapons/:id', () => {
     expect(res.statusCode).toBe(404);
     const body = JSON.parse(res.body);
 
-    expect(body.msg).toEqual('Weapon not found');
+    expect(body.msg).toBe('Weapon not found');
   });
 });
 
@@ -1382,7 +1382,7 @@ describe('DELETE /weapons/:id', () => {
     expect(res.statusCode).toBe(404);
 
     const body = JSON.parse(res.body);
-    expect(body.msg).toEqual('Weapon not found.');
+    expect(body.msg).toBe('Weapon not found.');
   });
 
   it('returns a 403 and error message if JWT is valid but role is PLAYER', async () => {

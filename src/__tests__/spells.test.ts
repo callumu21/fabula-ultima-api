@@ -235,6 +235,6 @@ describe('GET /spells/:id', () => {
     expect(res.statusCode).toBe(404);
     const body = JSON.parse(res.body);
 
-    expect(body.msg).toEqual('Spell not found');
+    expect(body.msg).toBe('Spell not found');
   });
 });

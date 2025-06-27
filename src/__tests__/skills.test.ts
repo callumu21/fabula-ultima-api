@@ -235,6 +235,6 @@ describe('GET /skills/:id', () => {
     expect(res.statusCode).toBe(404);
     const body = JSON.parse(res.body);
 
-    expect(body.msg).toEqual('Skill not found');
+    expect(body.msg).toBe('Skill not found');
   });
 });

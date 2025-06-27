@@ -131,6 +131,6 @@ describe('GET /classes/:id', () => {
     expect(res.statusCode).toBe(404);
     const body = JSON.parse(res.body);
 
-    expect(body.msg).toEqual('Class not found');
+    expect(body.msg).toBe('Class not found');
   });
 });
