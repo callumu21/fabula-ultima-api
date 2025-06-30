@@ -1,4 +1,11 @@
-import { type Class, type Skill, type Spell, type Weapon, type User } from '../../typings/index';
+import {
+  type Class,
+  type Skill,
+  type Spell,
+  type Weapon,
+  type User,
+  StatusEffect,
+} from '../../typings/index';
 
 type MockFactory<T> = (overrides?: Partial<T>) => T;
 
@@ -66,6 +73,15 @@ export const createMockUser: MockFactory<User> = (overrides = {}) => {
   return {
     email: 'test@user.com',
     password: 'password',
+    ...overrides,
+  };
+};
+
+export const createMockStatusEffect: MockFactory<StatusEffect> = (overrides = {}) => {
+  return {
+    id: 'mock-status-effect',
+    name: 'Slow',
+    affectedAttributes: ['INS'],
     ...overrides,
   };
 };
