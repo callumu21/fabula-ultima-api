@@ -3,6 +3,7 @@ import { classes } from './seed-data/classes';
 import { weapons, armours, shields } from './seed-data/equipment';
 import { skills } from './seed-data/skills';
 import { spells } from './seed-data/spells';
+import { statusEffects } from './seed-data/status-effects';
 
 const deleteExistingData = async () => {
   await prisma.spell.deleteMany();
@@ -11,6 +12,7 @@ const deleteExistingData = async () => {
   await prisma.armour.deleteMany();
   await prisma.weapon.deleteMany();
   await prisma.shield.deleteMany();
+  await prisma.statusEffect.deleteMany();
 };
 
 const seedData = async () => {
@@ -26,6 +28,9 @@ const seedData = async () => {
   await prisma.armour.createMany({ data: armours });
   await prisma.weapon.createMany({ data: weapons });
   await prisma.shield.createMany({ data: shields });
+
+  // Seed other data
+  await prisma.statusEffect.createMany({ data: statusEffects });
 
   console.log('Seed data created!');
 };
