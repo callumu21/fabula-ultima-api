@@ -6,6 +6,7 @@ import authRoutes from './routes/auth';
 import classRoutes from './routes/classes';
 import skillRoutes from './routes/skills';
 import spellRoutes from './routes/spells';
+import statusEffectRoutes from './routes/status-effects';
 import weaponRoutes from './routes/weapons';
 
 const buildServer = () => {
@@ -32,6 +33,7 @@ const buildServer = () => {
   app.register(classRoutes);
   app.register(skillRoutes);
   app.register(spellRoutes);
+  app.register(statusEffectRoutes);
   app.register(weaponRoutes);
 
   app.setErrorHandler((err, req, reply) => {
