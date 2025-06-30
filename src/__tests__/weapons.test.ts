@@ -1246,7 +1246,7 @@ describe('POST /weapons', () => {
     expect(body.msg).toBe('Quality must be either a string or null.');
   });
 
-  it('creates a new weapon when payload is valid and JWT has the ADMIN role', async () => {
+  it('returns 403 if payload is valid but JWT does not have the ADMIN role', async () => {
     const invalidToken = getTestToken(server, { role: 'PLAYER' });
 
     const mockWeapon = createMockWeapon();
