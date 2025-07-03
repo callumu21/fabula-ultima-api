@@ -7,6 +7,7 @@ import {
   type StatusEffect,
   type Character,
   type Armour,
+  type Shield,
 } from '../../typings/index';
 
 type MockFactory<T> = (overrides?: Partial<T>) => T;
@@ -102,6 +103,21 @@ export const createMockArmour: MockFactory<Armour> = (overrides = {}) => {
     usesIns: true,
     dexBonus: 0,
     insBonus: 0,
+    initiativeBonus: 0,
+    ...overrides,
+  };
+};
+
+export const createMockShield: MockFactory<Shield> = (overrides = {}) => {
+  return {
+    id: 'mock-shield',
+    name: 'Mock Shueld',
+    cost: 100,
+    isBasic: true,
+    quality: null,
+    isMartial: false,
+    defenseBonus: 0,
+    magicDefenseBonus: 0,
     initiativeBonus: 0,
     ...overrides,
   };
