@@ -1,9 +1,11 @@
+export * from './accessories';
+export * from './armours';
 export * from './weapons';
-export * from './armour';
 export * from './shields';
 
+import type { Accessory } from './accessories';
+import type { Armour } from './armours';
 import type { Weapon } from './weapons';
-import type { Armour } from './armour';
 import type { Shield } from './shields';
 
-export type Equipment = Weapon | Armour | Shield;
+export type Equipment = Armour | Accessory | Shield | Weapon;
