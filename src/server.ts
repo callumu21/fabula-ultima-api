@@ -3,6 +3,7 @@ import ajvErrors from 'ajv-errors';
 import authPlugin from './plugins/auth';
 import prismaPlugin from './plugins/prisma';
 import authRoutes from './routes/auth';
+import characterRoutes from './routes/characters';
 import classRoutes from './routes/classes';
 import skillRoutes from './routes/skills';
 import spellRoutes from './routes/spells';
@@ -31,6 +32,7 @@ const buildServer = () => {
   });
 
   app.register(classRoutes);
+  app.register(characterRoutes);
   app.register(skillRoutes);
   app.register(spellRoutes);
   app.register(statusEffectRoutes);
