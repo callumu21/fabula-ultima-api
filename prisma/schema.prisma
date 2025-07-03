@@ -21,8 +21,29 @@ model User {
   password String
   role     Role   @default(PLAYER)
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+  Character Character[]
+}
+
+// Bonds
+
+enum BondEmotion {
+  admiration
+  loyalty
+  affection
+  inferiority
+  mistrust
+  hatred
+}
+
+model Bond {
+  id       String        @id @default(uuid())
+  name     String
+  emotions BondEmotion[]
+
+  characterId String
+  character   Character @relation(fields: [characterId], references: [id])
 }
 
 // Status Effects
@@ -35,32 +56,35 @@ enum Attribute {
 }
 
 model StatusEffect {
-  id                 String      @id @default(uuid())
-  name               String      @unique
+  id                 String                  @id @default(uuid())
+  name               String                  @unique
+  characters         CharacterStatusEffect[]
   affectedAttributes Attribute[]
 }
 
 // Classes
 
 model Class {
-  id          String   @id
-  name        String   @unique
+  id          String       @id
+  name        String       @unique
   description String
   questions   String[]
   benefits    Json
   skills      Skill[]
   Spell       Spell[]
+  ClassLevel  ClassLevel[]
 }
 
 // Skills
 
 model Skill {
-  id          String @id
-  name        String
-  description String
-  maxRank     Int
-  classId     String
-  class       Class  @relation(fields: [classId], references: [id])
+  id             String           @id
+  name           String
+  description    String
+  maxRank        Int
+  classId        String
+  class          Class            @relation(fields: [classId], references: [id])
+  CharacterSkill CharacterSkill[]
 }
 
 // Spells
@@ -71,15 +95,16 @@ enum SpellDuration {
 }
 
 model Spell {
-  id          String        @id
-  name        String
-  description String
-  isOffensive Boolean
-  mpCost      String
-  target      String
-  duration    SpellDuration
-  classId     String
-  class       Class         @relation(fields: [classId], references: [id])
+  id             String           @id
+  name           String
+  description    String
+  isOffensive    Boolean
+  mpCost         String
+  target         String
+  duration       SpellDuration
+  classId        String
+  class          Class            @relation(fields: [classId], references: [id])
+  CharacterSpell CharacterSpell[]
 }
 
 // Equipment
@@ -123,7 +148,7 @@ model Weapon {
 }
 
 model Armour {
-  id              String  @id
+  id              String      @id
   name            String
   cost            Int
   isBasic         Boolean
@@ -134,6 +159,7 @@ model Armour {
   insBonus        Int
   initiativeBonus Int
   quality         String?
+  Character       Character[]
 }
 
 model Shield {
@@ -146,4 +172,115 @@ model Shield {
   magicDefenseBonus Int
   initiativeBonus   Int
   quality           String?
+}
+
+model Accessory {
+  id          String      @id @default(uuid())
+  name        String
+  cost        Int
+  description String
+  Character   Character[]
+}
+
+// Characters
+
+model ClassLevel {
+  id      String @id @default(uuid())
+  classId String
+  level   Int
+
+  characterId String
+  character   Character @relation(fields: [characterId], references: [id])
+  class       Class     @relation(fields: [classId], references: [id])
+}
+
+model CharacterSkill {
+  id          String @id @default(uuid())
+  skillId     String
+  characterId String
+  rank        Int
+
+  character Character @relation(fields: [characterId], references: [id])
+  skill     Skill     @relation(fields: [skillId], references: [id])
+}
+
+model CharacterSpell {
+  id          String @id @default(uuid())
+  spellId     String
+  characterId String
+
+  character Character @relation(fields: [characterId], references: [id])
+  spell     Spell     @relation(fields: [spellId], references: [id])
+}
+
+model CharacterStatusEffect {
+  id             String @id @default(uuid())
+  characterId    String
+  statusEffectId String
+
+  character    Character    @relation(fields: [characterId], references: [id])
+  statusEffect StatusEffect @relation(fields: [statusEffectId], references: [id])
+}
+
+enum ItemType {
+  weapon
+  shield
+}
+
+model Character {
+  id             String  @id @default(uuid())
+  name           String
+  identity       String
+  theme          String
+  origin         String
+  pronouns       String
+  profilePicture String?
+
+  // Attributes
+  dexBase    String
+  dexCurrent String
+  insBase    String
+  insCurrent String
+  migBase    String
+  migCurrent String
+  wlpBase    String
+  wlpCurrent String
+
+  hpMax     Int
+  hpCurrent Int
+  mpMax     Int
+  mpCurrent Int
+  ipMax     Int
+  ipCurrent Int
+
+  bonds       Bond[]
+  classLevels ClassLevel[]
+  skills      CharacterSkill[]
+  spells      CharacterSpell[]
+
+  statusEffects CharacterStatusEffect[]
+
+  // Equipment
+
+  zenit Int @default(0)
+
+  // Polymorphic slots (can be either weapon or shield)
+
+  mainHandId   String?
+  mainHandType ItemType?
+  offHandId    String?
+  offHandType  ItemType?
+
+  // Dedicated slots
+
+  armourId    String?
+  armour      Armour?    @relation(fields: [armourId], references: [id])
+  accessoryId String?
+  accessory   Accessory? @relation(fields: [accessoryId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  userId Int
+  user   User @relation(fields: [userId], references: [id])
 }
