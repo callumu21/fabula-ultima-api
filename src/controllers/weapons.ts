@@ -65,7 +65,7 @@ export const getWeaponById = async (
   const { id } = req.params;
 
   try {
-    const weapon = await findWeaponById({ id });
+    const weapon = await findWeaponById(id);
 
     if (!weapon) {
       return reply.code(404).send({ msg: 'Weapon not found' });
@@ -85,7 +85,7 @@ export const handleDeleteWeaponById = async (
   const { id } = req.params;
 
   try {
-    await deleteWeaponById({ id });
+    await deleteWeaponById(id);
     return reply.code(204).send();
   } catch (err) {
     if (err instanceof PrismaClientKnownRequestError && err.code === 'P2025') {

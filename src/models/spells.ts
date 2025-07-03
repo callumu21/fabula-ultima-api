@@ -13,7 +13,7 @@ export const findSpellById = async ({
   id: string;
   withClass: string | undefined;
 }) => {
-  return prisma.spell.findUnique({
+  return await prisma.spell.findUnique({
     where: { id },
     include: { class: withClass === 'true' },
   });

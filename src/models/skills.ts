@@ -13,7 +13,7 @@ export const findSkillById = async ({
   id: string;
   withClass: string | undefined;
 }) => {
-  return prisma.skill.findUnique({
+  return await prisma.skill.findUnique({
     where: { id },
     include: { class: withClass === 'true' },
   });

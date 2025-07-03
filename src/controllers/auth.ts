@@ -6,7 +6,7 @@ export const handleRegistration = async (req: FastifyRequest, reply: FastifyRepl
   const { email, password } = req.body as { email: string; password: string };
 
   try {
-    const existingUser = await findUserByEmail({ email });
+    const existingUser = await findUserByEmail(email);
 
     if (existingUser)
       return reply.code(400).send({
@@ -29,7 +29,7 @@ export const handleLogin = async (req: FastifyRequest, reply: FastifyReply) => {
   if (!email || !password) return reply.code(400).send({ msg: 'Missing credentials.' });
 
   try {
-    const user = await findUserByEmail({ email });
+    const user = await findUserByEmail(email);
 
     if (!user) return reply.code(401).send({ msg: 'Invalid credentials.' });
 
