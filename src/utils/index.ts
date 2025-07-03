@@ -143,7 +143,7 @@ export const formatCharacter = (
       level,
     })),
     spells: character.spells.map(({ spell }) => spell),
-    skills: character.skills.map(({ skill }) => skill),
+    skills: character.skills.map(({ rank, skill }) => ({ ...skill, rank })),
     bonds: character.bonds.map((bond) => formatBond(bond)),
     statusEffects: character.statusEffects.map(({ statusEffect }) =>
       formatStatusEffect(statusEffect)

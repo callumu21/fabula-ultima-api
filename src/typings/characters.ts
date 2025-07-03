@@ -1,5 +1,5 @@
 import { Accessory, Armour, Equipment, Shield, Weapon } from './equipment';
-import { Skill } from './skills';
+import { CharacterSkill } from './skills';
 import { Spell } from './spells';
 import { StatusEffect } from './status-effects';
 
@@ -67,7 +67,7 @@ export interface Character {
   statusEffects: StatusEffect[];
 
   classes: ClassLevel[];
-  skills: Skill[];
+  skills: CharacterSkill[];
 
   spells: Spell[];
 

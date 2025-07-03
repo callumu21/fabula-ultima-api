@@ -5,3 +5,7 @@ export interface Skill {
   maxRank: number;
   classId: string;
 }
+
+export type CharacterSkill = Skill & {
+  rank: number;
+};
