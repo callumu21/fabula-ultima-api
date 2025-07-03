@@ -4,7 +4,9 @@ import {
   type Spell,
   type Weapon,
   type User,
-  StatusEffect,
+  type StatusEffect,
+  type Character,
+  type Armour,
 } from '../../typings/index';
 
 type MockFactory<T> = (overrides?: Partial<T>) => T;
@@ -77,11 +79,90 @@ export const createMockUser: MockFactory<User> = (overrides = {}) => {
   };
 };
 
-export const createMockStatusEffect: MockFactory<StatusEffect> = (overrides = {}) => {
+export const createMockStatusEffect: MockFactory<StatusEffect & { id: string }> = (
+  overrides = {}
+) => {
   return {
     id: 'mock-status-effect',
     name: 'Slow',
     affectedAttributes: ['INS'],
+    ...overrides,
+  };
+};
+
+export const createMockArmour: MockFactory<Armour> = (overrides = {}) => {
+  return {
+    id: 'mock-armour',
+    name: 'Mock Armour',
+    cost: 100,
+    isBasic: true,
+    quality: null,
+    isMartial: false,
+    usesDex: true,
+    usesIns: true,
+    dexBonus: 0,
+    insBonus: 0,
+    initiativeBonus: 0,
+    ...overrides,
+  };
+};
+
+export const createMockCharacter: MockFactory<Character> = (overrides = {}) => {
+  return {
+    id: 'mock-character',
+    name: 'Mock Character',
+    identity: 'Mock identity',
+    theme: 'Mock theme',
+    origin: 'Mock origin',
+    pronouns: 'They/them',
+    bonds: [],
+    attributes: {
+      dexterity: {
+        base: 'd8',
+        current: 'd8',
+      },
+      insight: {
+        base: 'd8',
+        current: 'd8',
+      },
+      might: {
+        base: 'd8',
+        current: 'd8',
+      },
+      willpower: {
+        base: 'd8',
+        current: 'd8',
+      },
+    },
+    hitPoints: {
+      max: 50,
+      current: 50,
+    },
+    mindPoints: {
+      max: 30,
+      current: 30,
+    },
+    inventoryPoints: {
+      max: 6,
+      current: 6,
+    },
+    statusEffects: [],
+    classes: [],
+    skills: [],
+    spells: [],
+    equipment: {
+      slots: {
+        mainHand: null,
+        offHand: null,
+        armour: null,
+        accessory: null,
+      },
+      backpack: [],
+    },
+    zenit: 100,
+    initiativeModifier: 0,
+    defense: 8,
+    magicDefense: 8,
     ...overrides,
   };
 };
